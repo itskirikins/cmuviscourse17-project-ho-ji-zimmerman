@@ -20,17 +20,86 @@ var EARNINGS_ID = '#bar-chart--earnings';
 var EARNINGS_CSV = '/data/recent-grads.csv';
 var EARNINGS_SVG = d3.select(EARNINGS_ID);
 
+var TICK_OFFSET = 9;
+
 function asCurrency(amt) {
   return '$' + Intl.NumberFormat().format(amt);
+}
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this);
+    var words = text.text().split(/\s+/).reverse();
+    var lines = [[]];
+    var LINE_HEIGHT = 1.1; // ems
+    var x = text.attr("x");
+    var y = text.attr("y");
+    var dy = parseFloat(text.attr("dy"));
+    var tspan = text.text(null).append("tspan");
+
+    // Split the text by computing the wrap points
+    var word;
+    var numlines = 1;
+    while (word = words.pop()) {
+      var i = numlines - 1;
+      lines[i].push(word);
+      tspan.text(lines[i].join(" "));
+
+      if (tspan.node().getComputedTextLength() > width) {
+        lines[i].pop();
+        lines.push([]);
+        lines[i + 1] = [word];
+        tspan.text(word);
+        numlines += 1;
+      }
+    }
+
+    tspan.remove();
+    var n = lines.length;
+
+    // Actually add the wrapped lines to the page
+    lines.forEach(function(line, lineNumber) {
+      text.append('tspan')
+          .attr('x', x)
+          .attr('y', y)
+        .attr("dy", lineNumber * LINE_HEIGHT + dy - ((n - 1) / 2) + "em")
+          .text(line.join(' '));
+    });
+  });
+}
+
+// From http://stackoverflow.com/a/6475125
+function titleCase(title) {
+  var i, j, str, lowers, uppers;
+  str = title.replace(/([^\W_]+[^\s-]*) */g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+
+  // Certain minor words should be left lowercase unless
+  // they are the first or last words in the string
+  lowers = ['A', 'An', 'The', 'And', 'But', 'Or', 'For', 'Nor', 'As', 'At',
+  'By', 'For', 'From', 'In', 'Into', 'Near', 'Of', 'On', 'Onto', 'To', 'With'];
+  for (i = 0, j = lowers.length; i < j; i++)
+    str = str.replace(new RegExp('\\s' + lowers[i] + '\\s', 'g'),
+      function(txt) {
+        return txt.toLowerCase();
+      });
+
+  // Certain words such as initialisms or acronyms should be left uppercase
+  uppers = ['Id', 'Tv'];
+  for (i = 0, j = uppers.length; i < j; i++)
+    str = str.replace(new RegExp('\\b' + uppers[i] + '\\b', 'g'),
+      uppers[i].toUpperCase());
+
+  return str;
 }
 
 function earningsByMajor(earnings_data) {
 
   // ----- SVG Setup ----------------------------------------------------------
   // TODO(jez) Resize SVG height based on how many are in the selected category
-  // TODO(jez) Change the margin based on the longest label in the group
 
-  var margin = { top: 20, right: 20, bottom: 30, left: 400 };
+  var margin = { top: 20, right: 20, bottom: 30, left: 150 };
   var rect = EARNINGS_SVG.node().getBoundingClientRect();
   var width = rect.width - margin.left - margin.right;
   var height = rect.height - margin.top - margin.bottom;
@@ -64,7 +133,9 @@ function earningsByMajor(earnings_data) {
 
   g.append('g')
       .attr('class', 'y axis')
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y))
+    .selectAll('.tick text')
+      .call(wrap, margin.left - TICK_OFFSET);
 
   // TODO(jez) Write the value on top of the bar
   g.selectAll('.bar')
@@ -80,5 +151,6 @@ function earningsByMajor(earnings_data) {
 d3.csv(EARNINGS_CSV, function(error, all_data) {
   if (error) throw error;
 
+  all_data.forEach((d) => { d.major = titleCase(d.major) });
   earningsByMajor(all_data);
 });
