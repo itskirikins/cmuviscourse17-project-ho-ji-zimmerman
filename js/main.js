@@ -17,7 +17,7 @@ var COMMUNICATIONS = 'Communications & Journalism';
 var INTERDISCIPLINARY = 'Interdisciplinary';
 
 var EARNINGS_ID = '#bar-chart--earnings';
-var EARNINGS_CSV = '/data/recent-grads.csv';
+var EARNINGS_CSV = 'data/recent-grads.csv';
 var EARNINGS_SVG = d3.select(EARNINGS_ID);
 
 var TICK_OFFSET = 9;
