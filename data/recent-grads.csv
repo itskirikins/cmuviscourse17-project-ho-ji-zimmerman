@@ -1,4 +1,4 @@
-Rank,Major_code,Major,Major_category,Total,Sample_size,Men,Women,ShareWomen,Employed,Full_time,Part_time,Full_time_year_round,Unemployed,Unemployment_rate,Median,P25th,P75th,College_jobs,Non_college_jobs,Low_wage_jobs
+rank,major_code,major,major_category,total,sample_size,men,women,sharewomen,employed,full_time,part_time,full_time_year_round,unemployed,unemployment_rate,median,p25th,p75th,college_jobs,non_college_jobs,low_wage_jobs
 1,2419,PETROLEUM ENGINEERING,Engineering,2339,36,2057,282,0.120564344,1976,1849,270,1207,37,0.018380527,110000,95000,125000,1534,364,193
 2,2416,MINING AND MINERAL ENGINEERING,Engineering,756,7,679,77,0.101851852,640,556,170,388,85,0.117241379,75000,55000,90000,350,257,50
 3,2415,METALLURGICAL ENGINEERING,Engineering,856,3,725,131,0.153037383,648,558,133,340,16,0.024096386,73000,50000,105000,456,176,0
