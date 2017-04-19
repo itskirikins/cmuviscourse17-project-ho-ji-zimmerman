@@ -21,7 +21,7 @@ var EARNINGS_CSV = 'data/recent-grads.csv';
 var EARNINGS_SVG = d3.select(EARNINGS_ID);
 
 var RENT_ID = '#map--rent';
-var RENT_CSV = '/data/rental-data.csv';
+var RENT_CSV = 'data/rental-data.csv';
 var RENT_SVG = d3.select(RENT_ID);
 
 var TICK_OFFSET = 9;
