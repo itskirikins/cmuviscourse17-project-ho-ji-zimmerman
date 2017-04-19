@@ -21,50 +21,24 @@ var EARNINGS_CSV = 'data/recent-grads.csv';
 var EARNINGS_SVG = d3.select(EARNINGS_ID);
 
 var TICK_OFFSET = 9;
+var TICK_FONT_SIZE = 14;
 
 function asCurrency(amt) {
   return '$' + Intl.NumberFormat().format(amt);
 }
 
-function wrap(text, width) {
+function truncate(text, width) {
   text.each(function() {
-    var text = d3.select(this);
-    var words = text.text().split(/\s+/).reverse();
-    var lines = [[]];
-    var LINE_HEIGHT = 1.1; // ems
-    var x = text.attr("x");
-    var y = text.attr("y");
-    var dy = parseFloat(text.attr("dy"));
-    var tspan = text.text(null).append("tspan");
-
-    // Split the text by computing the wrap points
-    var word;
-    var numlines = 1;
-    while (word = words.pop()) {
-      var i = numlines - 1;
-      lines[i].push(word);
-      tspan.text(lines[i].join(" "));
-
-      if (tspan.node().getComputedTextLength() > width) {
-        lines[i].pop();
-        lines.push([]);
-        lines[i + 1] = [word];
-        tspan.text(word);
-        numlines += 1;
-      }
+    var self = d3.select(this);
+    var textLength = self.node().getComputedTextLength();
+    var fullContents = self.text();
+    var words = fullContents.split(/\s+/);
+    while (textLength > width && words.length > 0) {
+      words.pop();
+      self.text(words.join(' ') + ' …');
+      textLength = self.node().getComputedTextLength();
     }
-
-    tspan.remove();
-    var n = lines.length;
-
-    // Actually add the wrapped lines to the page
-    lines.forEach(function(line, lineNumber) {
-      text.append('tspan')
-          .attr('x', x)
-          .attr('y', y)
-        .attr("dy", lineNumber * LINE_HEIGHT + dy - ((n - 1) / 2) + "em")
-          .text(line.join(' '));
-    });
+    self.append('title').text(fullContents);
   });
 }
 
@@ -96,26 +70,24 @@ function titleCase(title) {
 
 function earningsByMajor(earnings_data) {
 
-  // ----- SVG Setup ----------------------------------------------------------
-  // TODO(jez) Resize SVG height based on how many are in the selected category
+  // TODO(jez) Refactor to let user select major category
+  var curCategory = ENGINEERING;
+  var data = earnings_data.filter((d) => d.major_category === curCategory)
+    .map((d) => { return {major: d.major, median: d.median}; })
+    .sort((d1, d2) => d1.median - d2.median)
 
-  var margin = { top: 20, right: 20, bottom: 30, left: 150 };
+  var margin = { top: 20, right: 20, bottom: 30, left: 200 };
+  var approxBarHeight = 25;
+  EARNINGS_SVG.attr('height', data.length * approxBarHeight + margin.top + margin.bottom);
   var rect = EARNINGS_SVG.node().getBoundingClientRect();
   var width = rect.width - margin.left - margin.right;
   var height = rect.height - margin.top - margin.bottom;
 
-  var x = d3.scaleLinear().range([0, width]);
-  var y = d3.scaleBand().range([height, 0]);
-
   var g = EARNINGS_SVG.append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  // ----- Data transformations -----------------------------------------------
-  // TODO(jez) Refactor to let user select major category
-  var curCategory = SCIENCE;
-  var data = earnings_data.filter((d) => d.major_category === curCategory)
-    .map((d) => { return {major: d.major, median: d.median}; })
-    .sort((d1, d2) => d1.median - d2.median)
+  var x = d3.scaleLinear().range([0, width])
+  var y = d3.scaleBand().range([height, 0])
 
   x.domain([0, d3.max(data, (d) => d.median)]);
   y.domain(data.map((d) => d.major))
@@ -129,13 +101,15 @@ function earningsByMajor(earnings_data) {
   g.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
-      .call(ticksFn);
+      .call(ticksFn)
+      .attr('font-size', TICK_FONT_SIZE);
 
   g.append('g')
       .attr('class', 'y axis')
       .call(d3.axisLeft(y))
+      .attr('font-size', TICK_FONT_SIZE)
     .selectAll('.tick text')
-      .call(wrap, margin.left - TICK_OFFSET);
+      .call(truncate, margin.left - TICK_OFFSET);
 
   // TODO(jez) Write the value on top of the bar
   g.selectAll('.bar')
@@ -145,7 +119,8 @@ function earningsByMajor(earnings_data) {
       .attr('x', 0)
       .attr('height', y.bandwidth())
       .attr('y', (d) => y(d.major))
-      .attr('width', (d) => x(d.median))
+      .attr('width', (d) => x(d.median));
+  // TODO(jez) Make bars clickable (should be able to have active bar)
 }
 
 d3.csv(EARNINGS_CSV, function(error, all_data) {

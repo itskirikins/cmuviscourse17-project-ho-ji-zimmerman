@@ -1,0 +1,12 @@
+#bar-chart--earnings .axis {
+  font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+}
+
+#bar-chart--earnings .bar {
+  fill: #93a1a1;
+}
+
+#bar-chart--earnings .bar:hover {
+  fill: #268bd2;
+  cursor: pointer;
+}
