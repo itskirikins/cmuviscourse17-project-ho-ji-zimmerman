@@ -21,9 +21,31 @@
       <figure class="fullwidth">
         <svg id="bar-chart--earnings" width="100%" height="35vw"></svg>
       </figure>
+      </section>
+
+    <section>
+      <h2>Affordability of Rent</h2>
+      <select name="top" id="map--select-top" onchange="updateSelection()">
+        <option value="0">Top 50 by Size</option>
+        <option value="1">Top 50 by Rent</option>
+        <option value="2">Bottom 50 by Rent</option>
+      </select>
+      <figure class="fullwidth">
+      <select name="category" id="map--select-category">
+        <option value="">Select Category</option>
+      </select>
+      <figure class="fullwidth">
+      <select name="majors" id="map--select-major">
+        <option value="">Select Major</option>
+      </select>
+      <figure class="fullwidth">
+        <svg id="map--rent" width="100%" height="35vw"></svg>
+      </figure>
     </section>
+     
   </article>
   <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
   <script src="/js/main.js"></script>
 </body>
 

@@ -1,130 +1,130 @@
-RegionName,SizeRank,2017-02
-"New York, NY",1,2145
-"Los Angeles-Long Beach-Anaheim, CA",2,1915
-"Chicago, IL",3,1400
-"Dallas-Fort Worth, TX",4,1139
-"Philadelphia, PA",5,1200
-"Houston, TX",6,1132
-"Washington, DC",7,1750
-"Miami-Fort Lauderdale, FL",8,1550
-"Atlanta, GA",9,1210
-"Boston, MA",10,1975
-"San Francisco, CA",11,2623
-"Detroit, MI",12,750
-"Riverside, CA",13,1175
-"Phoenix, AZ",14,950
-"Seattle, WA",15,1695
-"Minneapolis-St Paul, MN",16,1225
-"San Diego, CA",17,1700
-"St. Louis, MO",18,695
-"Tampa, FL",19,1000
-"Baltimore, MD",20,1215
-"Denver, CO",21,1296.5
-"Pittsburgh, PA",22,890
-"Portland, OR",23,1325
-"Charlotte, NC",24,1100
-"Sacramento, CA",25,1165
-"San Antonio, TX",26,825
-"Orlando, FL",27,1068.5
-"Cincinnati, OH",28,755
-"Cleveland, OH",29,700
-"Kansas City, MO",30,834.5
-"Las Vegas, NV",31,900
-"Columbus, OH",32,775
-"Indianapolis, IN",33,800
-"San Jose, CA",34,2475
-"Austin, TX",35,1065
-"Virginia Beach, VA",36,950
-"Nashville, TN",37,1395
-"Providence, RI",38,1174
-"Jacksonville, FL",39,900
-"Memphis, TN",40,695
-"Oklahoma City, OK",41,659
-"Louisville-Jefferson County, KY",42,795
-"Hartford, CT",43,950
-"Richmond, VA",44,975
-"New Orleans, LA",45,1150
-"Buffalo, NY",46,825
-"Raleigh, NC",47,990
-"Birmingham, AL",48,805
-"Salt Lake City, UT",49,852.5
-"Rochester, NY",50,800
-"Tucson, AZ",51,625
-"Urban Honolulu, HI",52,1650
-"Tulsa, OK",53,615
-"Fresno, CA",54,625
-"Worcester, MA",55,950
-"Stamford, CT",56,1599.5
-"Albuquerque, NM",57,679
-"Albany, NY",58,1024
-"Omaha, NE",59,780
-"New Haven, CT",60,1000
-"Bakersfield, CA",61,650
-"Ventura, CA",62,1650
-"Allentown, PA",63,895
-"El Paso, TX",64,563
-"Baton Rouge, LA",65,955
-"Columbia, SC",66,785
-"Akron, OH",67,585
-"North Port-Sarasota-Bradenton, FL",68,1193
-"Little Rock, AR",69,660
-"Stockton, CA",70,797.5
-"Charleston, SC",71,1280
-"Wichita, KS",72,575
-"Springfield, MA",73,925
-"Fort Myers, FL",74,950
-"Boise City, ID",75,725
-"Lakeland, FL",76,670
-"Daytona Beach, FL",77,797.5
-"Des Moines, IA",78,849
-"Youngstown, OH",79,524
-"Augusta, GA",80,713.5
-"Scranton, PA",81,650
-"Melbourne, FL",82,750
-"Spokane, WA",83,725
-"Lancaster, PA",84,695
-"Portland, ME",85,1250
-"Durham, NC",86,1010
-"Santa Rosa, CA",87,1713
-"Lexington, KY",88,717
-"Lansing, MI",89,625
-"Fayetteville, AR",90,786
-"Springfield, MO",91,500
-"York, PA",92,625
-"Corpus Christi, TX",93,899
-"Reno, NV",94,736.5
-"Asheville, NC",95,862.5
-"Santa Maria-Santa Barbara, CA",96,1785.5
-"Salinas, CA",97,1400
-"Vallejo, CA",98,1457
-"Killeen, TX",99,425
-"Manchester, NH",100,1000
-"Anchorage, AK",101,900
-"Davenport, IL",102,600
-"Myrtle Beach, SC",103,800
-"Tallahassee, FL",104,650
-"Eugene, OR",105,695
-"Savannah, GA",106,1038.5
-"Ann Arbor, MI",107,975
-"South Bend, IN",108,580
-"Evansville, IN",109,500
-"Lincoln, NE",110,745
-"Fort Collins, CO",111,1146.5
-"Boulder, CO",112,1395
-"Lubbock, TX",113,559
-"Duluth, MN",114,725
-"Atlantic City, NJ",115,950
-"New London, CT",116,850
-"Gainesville, FL",117,740
-"Wilmington, NC",118,832
-"Hagerstown, MD",119,650
-"Bremerton, WA",120,1101
-"Champaign-Urbana, IL",121,595
-"Sioux Falls, SD",122,709.5
-"Chico, CA",123,750
-"Charlottesville, VA",124,985
-"Tyler, TX",125,757
-"Torrington, CT",126,825
-"Bloomington, IN",127,725
-"Billings, MT",128,600
-"Missoula, MT",129,720
+RegionName,SizeRank,lat,lon,rent
+"New York, NY",1,40.730599,-73.986581,2145
+"Los Angeles, CA",2,34.054394,-118.243941,1915
+"Chicago, IL",3,41.875555,-87.624421,1400
+"Dallas-Fort Worth, TX",4,32.737923,-97.239428,1139
+"Philadelphia, PA",5,39.952399,-75.16359,1200
+"Houston, TX",6,29.758938,-95.367697,1132
+"Washington, DC",7,38.894955,-77.036646,1750
+"Miami-Fort Lauderdale, FL",8,26.091731,-80.13594,1550
+"Atlanta, GA",9,33.749099,-84.390185,1210
+"Boston, MA",10,42.360482,-71.059568,1975
+"San Francisco, CA",11,37.779277,-122.41927,2623
+"Detroit, MI",12,42.348664,-83.056737,750
+"Riverside, CA",13,33.953355,-117.396162,1175
+"Phoenix, AZ",14,33.446768,-112.075672,950
+"Seattle, WA",15,47.603832,-122.330062,1695
+"Minneapolis-St Paul, MN",16,44.9773,-93.265469,1225
+"San Diego, CA",17,32.717421,-117.162771,1700
+"St. Louis, MO",18,38.627273,-90.197889,695
+"Tampa, FL",19,27.94776,-82.458444,1000
+"Baltimore, MD",20,39.290861,-76.610807,1215
+"Denver, CO",21,39.739154,-104.984703,1296.50
+"Pittsburgh, PA",22,40.441694,-79.990086,890
+"Portland, OR",23,45.520247,-122.674195,1325
+"Charlotte, NC",24,35.227087,-80.843127,1100
+"Sacramento, CA",25,38.581572,-121.4944,1165
+"San Antonio, TX",26,29.4246,-98.49514,825
+"Orlando, FL",27,28.542118,-81.379046,1068.50
+"Cincinnati, OH",28,39.101454,-84.51246,755
+"Cleveland, OH",29,41.505161,-81.693445,700
+"Kansas City, MO",30,39.084469,-94.56303,834.50
+"Las Vegas, NV",31,36.166286,-115.149225,900
+"Columbus, OH",32,39.96226,-83.000706,775
+"Indianapolis, IN",33,39.768333,-86.15835,800
+"San Jose, CA",34,37.336191,-121.890583,2475
+"Austin, TX",35,30.271129,-97.743699,1065
+"Virginia Beach, VA",36,36.718371,-76.24668,950
+"Nashville, TN",37,36.16223,-86.774353,1395
+"Providence, RI",38,41.823989,-71.412834,1174
+"Jacksonville, FL",39,30.332184,-81.655651,900
+"Memphis, TN",40,35.149022,-90.051628,695
+"Oklahoma City, OK",41,35.472989,-97.517054,659
+"Louisville-Jefferson County, KY",42,38.209237,-85.70385,795
+"Hartford, CT",43,41.763494,-72.683052,950
+"Richmond, VA",44,37.538509,-77.43428,975
+"New Orleans, LA",45,29.949932,-90.070116,1150
+"Buffalo, NY",46,42.886717,-78.878392,825
+"Raleigh, NC",47,35.780398,-78.639099,990
+"Birmingham, AL",48,33.520682,-86.802433,805
+"Salt Lake City, UT",49,40.767013,-111.890431,852.50
+"Rochester, NY",50,43.157285,-77.615214,800
+"Tucson, AZ",51,32.221742,-110.926476,625
+"Urban Honolulu, HI",52,21.304547,-157.855676,1650
+"Tulsa, OK",53,36.155681,-95.992911,615
+"Fresno, CA",54,36.739442,-119.784831,625
+"Worcester, MA",55,42.262593,-71.802293,950
+"Stamford, CT",56,41.05343,-73.538734,1599.50
+"Albuquerque, NM",57,35.084103,-106.650985,679
+"Albany, NY",58,42.651167,-73.754968,1024
+"Omaha, NE",59,41.258732,-95.937873,780
+"New Haven, CT",60,41.308214,-72.925052,1000
+"Bakersfield, CA",61,35.373871,-119.019464,650
+"Ventura, CA",62,34.364744,-119.310582,1650
+"Allentown, PA",63,40.602206,-75.471279,895
+"El Paso, TX",64,31.811131,-106.501349,563
+"Baton Rouge, LA",65,30.450746,-91.154551,955
+"Columbia, SC",66,34.000749,-81.034331,785
+"Akron, OH",67,41.083064,-81.518485,585
+"North Port-Sarasota-Bradenton, FL",68,27.044224,-82.235925,1193
+"Little Rock, AR",69,34.746481,-92.289595,660
+"Stockton, CA",70,37.957702,-121.29078,797.50
+"Charleston, SC",71,32.787601,-79.940273,1280
+"Wichita, KS",72,37.692236,-97.337545,575
+"Springfield, MA",73,42.101483,-72.589811,925
+"Fort Myers, FL",74,26.640628,-81.872308,950
+"Boise City, ID",75,43.598838,-116.243255,725
+"Lakeland, FL",76,28.039465,-81.949804,670
+"Daytona Beach, FL",77,29.210815,-81.022833,797.50
+"Des Moines, IA",78,41.591064,-93.603715,849
+"Youngstown, OH",79,41.09978,-80.649519,524
+"Augusta, GA",80,33.470971,-81.974843,713.5
+"Scranton, PA",81,41.408687,-75.662129,650
+"Melbourne, FL",82,28.083627,-80.608109,750
+"Spokane, WA",83,47.65886,-117.424713,725
+"Lancaster, PA",84,40.03813,-76.305669,695
+"Portland, ME",85,43.661028,-70.25486,1250
+"Durham, NC",86,35.994033,-78.898619,1010
+"Santa Rosa, CA",87,38.440468,-122.714431,1713
+"Lexington, KY",88,38.046407,-84.497039,717
+"Lansing, MI",89,42.733771,-84.55538,625
+"Fayetteville, AR",90,36.062584,-94.157433,786
+"Springfield, MO",91,37.215331,-93.298252,500
+"York, PA",92,39.962398,-76.727392,625
+"Corpus Christi, TX",93,27.800254,-97.395574,899
+"Reno, NV",94,39.52927,-119.813674,736.50
+"Asheville, NC",95,35.60095,-82.554016,862.50
+"Santa Maria-Santa Barbara, CA",96,34.95313,-120.435858,1785.5
+"Salinas, CA",97,36.677708,-121.656011,1400
+"Vallejo, CA",98,38.104086,-122.256637,1457
+"Killeen, TX",99,31.117144,-97.727796,425
+"Manchester, NH",100,42.99564,-71.454789,1000
+"Anchorage, AK",101,61.216313,-149.894852,900
+"Davenport, IL",102,41.523644,-90.577637,600
+"Myrtle Beach, SC",103,33.695646,-78.890041,800
+"Tallahassee, FL",104,30.438083,-84.280933,650
+"Eugene, OR",105,44.101181,-123.152384,695
+"Savannah, GA",106,32.083541,-81.099834,1038.50
+"Ann Arbor, MI",107,42.268157,-83.731229,975
+"South Bend, IN",108,41.683381,-86.250007,580
+"Evansville, IN",109,37.974765,-87.555848,500
+"Lincoln, NE",110,40.8,-96.667821,745
+"Fort Collins, CO",111,40.550853,-105.066808,1146.50
+"Boulder, CO",112,40.014986,-105.270546,1395
+"Lubbock, TX",113,33.577863,-101.855166,559
+"Duluth, MN",114,46.772932,-92.125122,725
+"Atlantic City, NJ",115,39.364285,-74.422935,950
+"New London, CT",116,41.355654,-72.099521,850
+"Gainesville, FL",117,29.651907,-82.324798,740
+"Wilmington, NC",118,34.225728,-77.944711,832
+"Hagerstown, MD",119,39.641922,-77.720264,650
+"Bremerton, WA",120,47.566539,-122.652797,1101
+"Champaign-Urbana, IL",121,40.098386,-83.744725,595
+"Sioux Falls, SD",122,43.549975,-96.700327,709.50
+"Chico, CA",123,39.728495,-121.837478,750
+"Charlottesville, VA",124,38.029306,-78.476678,985
+"Tyler, TX",125,32.35126,-95.301062,757
+"Torrington, CT",126,41.800652,-73.121221,825
+"Bloomington, IN",127,39.16704,-86.534288,725
+"Billings, MT",128,45.787496,-108.49607,600
+"Missoula, MT",129,46.87008,-113.99528,720
