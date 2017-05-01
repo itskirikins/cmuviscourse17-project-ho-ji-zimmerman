@@ -132,7 +132,7 @@ function earningsByMajor(earnings_data) {
 function drawMap(earnings_data){
   // ----- SVG Setup ----------------------------------------------------------
   var rect = RENT_SVG.node().getBoundingClientRect();
-  
+
   var projection = d3.geoAlbersUsa()
       .translate([500,250])
           .scale([1000]);
@@ -162,8 +162,8 @@ function drawMap(earnings_data){
   data.forEach( (d) => majorOptions.add(new Option(d.major, d.major)));
   var cities = RENT_SVG.append("g").attr("class", "cities");
   TOOLTIP = d3.select("body")
-    .append("div")   
-    .attr("class", "tooltip")               
+    .append("div")
+    .attr("class", "tooltip")
     .style("opacity", 0);
 }
 
@@ -182,7 +182,7 @@ function rentalPrices(rental_data, earnings_data){
           return data.sort((d1, d2) => d2.rent - d1.rent).slice(0,50);
           break;
         case '2':
-          return data.sort((d1, d2) => d1.rent - d2.rent).slice(0,50); 
+          return data.sort((d1, d2) => d1.rent - d2.rent).slice(0,50);
           break;
     }};
 
@@ -204,20 +204,20 @@ function rentalPrices(rental_data, earnings_data){
     .attr("cy", function(d) {
       return projection([d.lon, d.lat])[1];
     })
-    .on("mouseover", function(d) {      
-      TOOLTIP.transition()        
-        .duration(200)      
+    .on("mouseover", function(d) {
+      TOOLTIP.transition()
+        .duration(200)
         .style("opacity", .9);
 
       TOOLTIP.text(d.RegionName+"\n Median Rent: "+asCurrency(d.rent))
-        .style("left", (d3.event.pageX) + "px")     
+        .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
       this.parentNode.appendChild(this);
     })
-    .on("mouseout", function(d) {       
-      TOOLTIP.transition()        
-        .duration(500)      
-        .style("opacity", 0);   
+    .on("mouseout", function(d) {
+      TOOLTIP.transition()
+        .duration(500)
+        .style("opacity", 0);
     })
     .transition()
     .duration(500)
