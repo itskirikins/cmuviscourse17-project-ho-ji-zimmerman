@@ -21,13 +21,13 @@
 }
 
 .city{
-  fill: steelblue;
+  fill: #268bd2;
   opacity: .75;
   stroke: none;
 }
 
 .city:hover{
-  fill: royalblue;
+  fill: #1b6193;
   opacity: 1;
   stroke: #fff;
   stroke-width: .5px;
