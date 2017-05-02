@@ -3,16 +3,31 @@
 }
 
 #bar-chart--earnings .bar {
-  fill: #93a1a1;
+  fill: #073642;
 }
 
 #bar-chart--earnings .bar:hover {
-  fill: #268bd2;
+  fill: #1b6193;
   cursor: pointer;
 }
 
+#bar-chart--earnings .bar.active {
+  fill: #268bd2;
+}
+
+#bar-chart--categories-nav-btn {
+  color: #93a1a1;
+  cursor: default;
+}
+#bar-chart--categories-nav-btn.enabled {
+  cursor: pointer;
+}
+#bar-chart--categories-nav-btn.enabled:hover {
+  text-decoration: underline;
+}
+
 .states{
-  fill: darkgray;
+  fill: #93a1a1;
   stroke: #fff;
   stroke-width: 1px;
   stroke-linejoin: round;

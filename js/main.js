@@ -1,32 +1,86 @@
 
-var ENGINEERING = 'Engineering';
-var EDUCATION = 'Education';
-var HUMANITIES = 'Humanities & Liberal Arts';
-var BIOLOGY = 'Biology & Life Science';
-var BUSINESS = 'Business';
-var HEALTH = 'Health';
-var COMPUTERS = 'Computers & Mathematics';
-var AGRICULTURE = 'Agriculture & Natural Resources';
-var SCIENCE = 'Physical Sciences';
-var PSYCHOLOGY = 'Psychology & Social Work';
-var SOCIAL_SCIENCE = 'Social Science';
-var ARTS = 'Arts';
-var INDUSTRIAL_ARTS = 'Industrial Arts & Consumer Services';
-var LAW = 'Law & Public Policy';
-var COMMUNICATIONS = 'Communications & Journalism';
-var INTERDISCIPLINARY = 'Interdisciplinary';
+// ----- Constants ------------------------------------------------------------
 
-var EARNINGS_ID = '#bar-chart--earnings';
-var EARNINGS_CSV = 'data/recent-grads.csv';
-var EARNINGS_SVG = d3.select(EARNINGS_ID);
+// Categories
+const ENGINEERING = 'Engineering';
+const EDUCATION = 'Education';
+const HUMANITIES = 'Humanities & Liberal Arts';
+const BIOLOGY = 'Biology & Life Science';
+const BUSINESS = 'Business';
+const HEALTH = 'Health';
+const COMPUTERS = 'Computers & Mathematics';
+const AGRICULTURE = 'Agriculture & Natural Resources';
+const SCIENCE = 'Physical Sciences';
+const PSYCHOLOGY = 'Psychology & Social Work';
+const SOCIAL_SCIENCE = 'Social Science';
+const ARTS = 'Arts';
+const INDUSTRIAL_ARTS = 'Industrial Arts & Consumer Services';
+const LAW = 'Law & Public Policy';
+const COMMUNICATIONS = 'Communications & Journalism';
+const INTERDISCIPLINARY = 'Interdisciplinary';
 
-var RENT_ID = '#map--rent';
-var RENT_CSV = 'data/rental-data.csv';
-var RENT_SVG = d3.select(RENT_ID);
+// Bar chart
+const CATEGORIES_NAV_ID = '#bar-chart--categories-nav-btn';
+const EARNINGS_ID = '#bar-chart--earnings';
+const CONTAINER_ID = '#bar-chart--container';
+const EARNINGS_CSV = 'data/recent-grads.csv';
+const EARNINGS_SVG = d3.select(EARNINGS_ID);
 
-var TICK_OFFSET = 9;
-var TICK_FONT_SIZE = 14;
+// Rentals
+const RENT_ID = '#map--rent';
+const RENT_CSV = 'data/rental-data.csv';
+const RENT_SVG = d3.select(RENT_ID);
+
+// Ticks
+const TICK_OFFSET = 9;
+const TICK_FONT_SIZE = 14;
+
+// Earnings selection classes
+const AGGREGATE = 'AGGREGATE';
+const CATEGORY  = 'CATEGORY';
+const MAJOR     = 'MAJOR';
+
+// Cities selection classes
+const TOP_SIZE = 'TOP_SIZE';
+const TOP_RENT = 'TOP_RENT'
+const BOT_RENT = 'BOT_RENT'
+
+// Going to be initialized later, but should be constant
+var _EARNINGS_DATA;
+var _RENT_DATA;
+
+// ----- Mutable state ------------------------------------------------------
+
 var g_tooltip;
+
+var g_earningsSelection = {
+  cls: CATEGORY,
+  val: ENGINEERING,
+};
+
+var g_citiesSelection = TOP_SIZE;
+
+// ----- State transition functions -----
+
+function setActiveAggregate() {
+  g_earningsSelection.cls = AGGREGATE;
+  g_earningsSelection.val = null;
+}
+
+function setActiveCategory(newCategory) {
+  g_earningsSelection.cls = CATEGORY;
+  g_earningsSelection.val = newCategory;
+}
+
+function setActiveMajor(newCategory, newMajor) {
+  g_earningsSelection.cls = MAJOR;
+  g_earningsSelection.val = {
+    category: newCategory,
+    major: newMajor,
+  };
+}
+
+// ----- Helper functions -----------------------------------------------------
 
 function asCurrency(amt) {
   return '$' + Intl.NumberFormat().format(amt);
@@ -73,29 +127,42 @@ function titleCase(title) {
   return str;
 }
 
-function earningsByMajor(earnings_data) {
+// From http://stackoverflow.com/a/34890276
+var groupBy = function(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
 
-  // TODO(jez) Refactor to let user select major category
-  var curCategory = ENGINEERING;
-  var data = earnings_data.filter((d) => d.major_category === curCategory)
-    .map((d) => { return {major: d.major, median: d.median}; })
-    .sort((d1, d2) => d1.median - d2.median)
+// ----- Rendering functions --------------------------------------------------
+
+function renderCategoriesNavBtn() {
+  if (g_earningsSelection.cls === AGGREGATE) {
+    document.querySelector(CATEGORIES_NAV_ID).classList.remove('enabled');
+  }
+  else {
+    document.querySelector(CATEGORIES_NAV_ID).classList.add('enabled');
+  }
+}
+
+function renderEarningsBars(barsData) {
 
   var margin = { top: 20, right: 20, bottom: 30, left: 200 };
   var approxBarHeight = 25;
-  EARNINGS_SVG.attr('height', data.length * approxBarHeight + margin.top + margin.bottom);
+  EARNINGS_SVG.attr('height', barsData.length * approxBarHeight + margin.top + margin.bottom);
   var rect = EARNINGS_SVG.node().getBoundingClientRect();
   var width = rect.width - margin.left - margin.right;
   var height = rect.height - margin.top - margin.bottom;
 
-  var g = EARNINGS_SVG.append('g')
+  var g = EARNINGS_SVG.select(CONTAINER_ID)
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
   var x = d3.scaleLinear().range([0, width])
   var y = d3.scaleBand().range([height, 0])
 
-  x.domain([0, d3.max(data, (d) => d.median)]);
-  y.domain(data.map((d) => d.major))
+  x.domain([0, d3.max(barsData, (d) => d.value)]);
+  y.domain(barsData.map((d) => d.label))
     .padding(0.1);
 
   var ticksFn = d3.axisBottom(x)
@@ -103,29 +170,54 @@ function earningsByMajor(earnings_data) {
     .tickFormat((d) => asCurrency(d))
     .tickSizeInner([-height]);
 
-  g.append('g')
-      .attr('class', 'x axis')
+  g.select('.x.axis')
       .attr('transform', 'translate(0,' + height + ')')
       .call(ticksFn)
       .attr('font-size', TICK_FONT_SIZE);
 
-  g.append('g')
-      .attr('class', 'y axis')
+  g.select('.y.axis')
       .call(d3.axisLeft(y))
       .attr('font-size', TICK_FONT_SIZE)
     .selectAll('.tick text')
       .call(truncate, margin.left - TICK_OFFSET);
 
   // TODO(jez) Write the value on top of the bar
-  g.selectAll('.bar')
-      .data(data)
-    .enter().append('rect')
-      .attr('class', 'bar')
+  bars = g.selectAll('.bar').data(barsData)
+  bars.exit().remove();
+  bars = bars.enter().append('rect').merge(bars);
+
+  bars.attr('class', 'bar')
       .attr('x', 0)
       .attr('height', y.bandwidth())
-      .attr('y', (d) => y(d.major))
-      .attr('width', (d) => x(d.median));
-  // TODO(jez) Make bars clickable (should be able to have active bar)
+      .attr('y', (d) => y(d.label))
+      .attr('width', (d) => x(d.value))
+      .classed('active', (d) => d.active)
+      .on('click', (d) => {
+        switch (g_earningsSelection.cls) {
+          case AGGREGATE:
+            setActiveCategory(d.label);
+            break;
+          case CATEGORY:
+            var curCategory = g_earningsSelection.val;
+            setActiveMajor(curCategory, d.label);
+            break;
+          case MAJOR:
+            var curCategory = g_earningsSelection.val.category;
+            var curMajor = g_earningsSelection.val.major;
+            if (d.label === curMajor) {
+              setActiveCategory(curCategory);
+            }
+            else {
+              setActiveMajor(curCategory, d.label);
+            }
+            break;
+          default:
+            console.error('Broken invariant: invalid cls for g_earningsSelection');
+            return;
+        }
+
+        render();
+      });
 }
 
 
@@ -141,16 +233,16 @@ function drawMap(earnings_data) {
   var g = RENT_SVG.append('g');
   RENT_SVG.attr('viewBox', '0 0 ' + rect.width + ' ' + (rect.height*1.05));
 
-  // ----- Map Drawing --------------------------------------------------------
-  d3.json("https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json", function(error, us) {
+  // ----- Map Drawing -----
+  d3.json('https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json', function(error, us) {
    if (error) throw error;
 
-   g.attr("class", "states")
-    .selectAll("path")
+   g.attr('class', 'states')
+    .selectAll('path')
                .data(us.features)
                .enter()
-               .append("path")
-               .attr("d", path);
+               .append('path')
+               .attr('d', path);
   });
 
   // TODO(liza8bit) Allow for selection of major category
@@ -227,32 +319,75 @@ function rentalPrices(rental_data, earnings_data) {
     .merge(circles);
 }
 
-function updateSelection() {
-  d3.csv(EARNINGS_CSV, function(error, all_data) {
-    if (error) throw error;
+function render() {
 
-    earningsByMajor(all_data);
+  var barsData;
 
-    d3.csv(RENT_CSV, function(error, rent_data) {
-      if (error) throw error;
-      rentalPrices(rent_data, all_data);
-    });
-  });
+  // Compute function of global state + constant data to get renderable data
+  switch (g_earningsSelection.cls) {
+    case AGGREGATE:
+      aggregated = barsData = groupBy(_EARNINGS_DATA, 'major_category');
+      barsData = [];
+      for (curCategory in aggregated) {
+        if (!aggregated.hasOwnProperty(curCategory)) continue;
+
+        var curMajors = aggregated[curCategory];
+        var n = curMajors.length;
+
+        // Compute average as (d1 / n) + ... + (dn / n)
+        barsData.push(curMajors.reduce((acc, val) => ({
+          label: acc.label,
+          value: acc.value + (val.median / n),
+          active: acc.active,
+        }), {label: curCategory, value: 0, active: false}));
+      }
+      barsData = barsData.sort((d1, d2) => d1.value - d2.value);
+      break;
+
+    case CATEGORY:
+      var curCategory = g_earningsSelection.val;
+      barsData = _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
+        .map((d) => ({label: d.major, value: d.median, active: false}))
+        .sort((d1, d2) => d1.value - d2.value);
+      break;
+
+    case MAJOR:
+      var curCategory = g_earningsSelection.val.category;
+      var curMajor    = g_earningsSelection.val.major;
+      barsData = _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
+        .map((d) => ({label: d.major, value: d.median, active: d.major === curMajor}))
+        .sort((d1, d2) => d1.value - d2.value);
+      break;
+
+    default:
+      console.error('Broken invariant: invalid cls for g_earningsSelection');
+      return;
+  }
+
+  renderCategoriesNavBtn();
+  renderEarningsBars(barsData);
+
+  // TODO(jez) Update map to use new global state etc.
+  //drawMap();
+  //rentalPrices();
 }
 
+document.querySelector(CATEGORIES_NAV_ID).addEventListener('click', (ev) => {
+  ev.preventDefault();
+  setActiveAggregate()
+  render();
+});
 
-
-d3.csv(EARNINGS_CSV, function(error, all_data) {
+d3.csv(EARNINGS_CSV, function(error, allData) {
   if (error) throw error;
-
-  all_data.forEach((d) => { d.major = titleCase(d.major) });
-  earningsByMajor(all_data);
-  drawMap(all_data);
+  allData.forEach((d) => { d.major = titleCase(d.major) });
+  _EARNINGS_DATA = allData;
 
   d3.csv(RENT_CSV, function(error, rent_data) {
     if (error) throw error;
+    _RENT_DATA = rent_data;
 
-    rentalPrices(rent_data, all_data);
+    render();
   });
 });
 

@@ -18,26 +18,14 @@
     <section>
       <h2>Earnings By Major</h2>
 
-      <figure>
-        <svg id="bar-chart--earnings" width="100%" height="35vw"></svg>
-      </figure>
-      </section>
-
-    <section>
-      <h2>Affordability of Rent</h2>
-      <select name="top" id="map--select-top" onchange="updateSelection()">
-        <option value="0">Top 50 by Size</option>
-        <option value="1">Top 50 by Rent</option>
-        <option value="2">Bottom 50 by Rent</option>
-      </select>
-      <select name="category" id="map--select-category">
-        <option value="">Select Category</option>
-      </select>
-      <select name="majors" id="map--select-major">
-        <option value="">Select Major</option>
-      </select>
       <figure class="fullwidth">
-        <svg id="map--rent" width="100%" height="35vw"></svg>
+        <span id="bar-chart--categories-nav-btn">&#9664; Back to all categories</span>
+        <svg id="bar-chart--earnings" width="100%" height="35vw">
+          <g id="bar-chart--container">
+            <g class="x axis"></g>
+            <g class="y axis"></g>
+          </g>
+        </svg>
       </figure>
     </section>
 
