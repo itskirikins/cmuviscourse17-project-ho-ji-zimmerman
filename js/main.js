@@ -130,7 +130,7 @@ function earningsByMajor(earnings_data) {
 
 
 function drawMap(earnings_data) {
-  // ----- SVG Setup ----------------------------------------------------------
+  // ----- SVG Setup -----
   var rect = RENT_SVG.node().getBoundingClientRect();
 
   var projection = d3.geoAlbersUsa()
@@ -160,11 +160,11 @@ function drawMap(earnings_data) {
     .sort((d1, d2) => d1.median - d2.median)
   var majorOptions = document.getElementById('map--select-major').options;
   data.forEach( (d) => majorOptions.add(new Option(d.major, d.major)));
-  var cities = RENT_SVG.append("g").attr("class", "cities");
+  var cities = RENT_SVG.append('g').attr('class', 'cities');
   g_tooltip = d3.select('body')
-    .append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+    .append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
 }
 
 function rentalPrices(rental_data, earnings_data) {
@@ -186,42 +186,42 @@ function rentalPrices(rental_data, earnings_data) {
           break;
     }};
 
-  var circles = RENT_SVG.select("g.cities").selectAll("circle")
+  var circles = RENT_SVG.select('g.cities').selectAll('circle')
     .data(sel_data, function(d) {return d.RegionName});
 
   circles.exit()
     .transition()
     .duration(500)
-    .style("opacity", 0)
+    .style('opacity', 0)
     .remove();
 
   circles.enter()
-    .append("circle")
-    .attr("class", "city")
-    .attr("cx", function(d) {
+    .append('circle')
+    .attr('class', 'city')
+    .attr('cx', function(d) {
       return projection([d.lon, d.lat])[0];
     })
-    .attr("cy", function(d) {
+    .attr('cy', function(d) {
       return projection([d.lon, d.lat])[1];
     })
-    .on("mouseover", function(d) {
+    .on('mouseover', function(d) {
       g_tooltip.transition()
         .duration(200)
-        .style("opacity", .9);
+        .style('opacity', .9);
 
       g_tooltip.text(d.RegionName+'\n Median Rent: '+asCurrency(d.rent))
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
+        .style('left', (d3.event.pageX) + 'px')
+        .style('top', (d3.event.pageY - 28) + 'px');
       this.parentNode.appendChild(this);
     })
-    .on("mouseout", function(d) {
+    .on('mouseout', function(d) {
       g_tooltip.transition()
         .duration(500)
-        .style("opacity", 0);
+        .style('opacity', 0);
     })
     .transition()
     .duration(500)
-    .attr("r", function(d) {
+    .attr('r', function(d) {
       return Math.sqrt(d.rent/6);
       })
     .merge(circles);
