@@ -170,8 +170,7 @@ blockquote .sidenote, blockquote .marginnote { margin-right: -82%;
                                                min-width: 59%;
                                                text-align: left; }    
 
-footer, table { width: 55%; }
-p { width: 90%;}
+p, footer, table { width: 55%; }
 
 div.fullwidth, table.fullwidth { width: 100%; }
 

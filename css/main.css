@@ -6,6 +6,10 @@ article {
   width: 95%;
 }
 
+p.fullwidth {
+  width: 90%;
+}
+
 svg {
   float: left;
 }
