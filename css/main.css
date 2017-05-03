@@ -18,6 +18,19 @@ svg {
   font-weight: bold;
 }
 
+select {
+  -webkit-appearance: none;
+  background: #eee8d5;
+  padding: 5px;
+  font-size: 1.4rem;
+  font-family: et-book;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: right;
+}
+
 #bar-chart--earnings .axis {
   font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }
