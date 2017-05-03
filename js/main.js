@@ -209,7 +209,6 @@ function renderEarningsBars(barsData) {
     .selectAll('.tick text')
       .call(truncate, margin.left - TICK_OFFSET);
 
-  // TODO(jez) Write the value on top of the bar
   bars = g.selectAll('.bar').data(barsData)
   bars.exit().remove();
   bars = bars.enter().append('rect').merge(bars);
@@ -282,16 +281,17 @@ function renderTooltip() {
 
 function renderCities(rentalData, curSalary) {
   var color = d3.scaleLinear()
-      .domain([20, g_percentCutoff])
+      .domain([5, g_percentCutoff])
       .range([AFFORDABLE_COLOR, CUTOFF_COLOR]);
 
   var circles = RENT_SVG.select('.cities').selectAll('circle')
-      .data(rentalData);
+      .data(rentalData, (d) => d.RegionName);
 
   circles.exit()
       .transition()
       .duration(500)
       .style('opacity', 0)
+      .attr('r', 0)
       .remove();
 
   circles = circles.enter()
@@ -323,6 +323,8 @@ function renderCities(rentalData, curSalary) {
         g_tooltip.text(tooltipText)
           .style('left', (d3.event.pageX + 20) + 'px')
           .style('top', (d3.event.pageY - 28) + 'px');
+
+        this.parentNode.appendChild(this);
       })
       .on('mouseout', function(d) {
         g_tooltip.transition()
@@ -380,7 +382,7 @@ function getBarsData() {
 function getRentalData() {
   switch (g_citiesSelection) {
     case TOP_SIZE:
-      return _RENT_DATA.slice(0, 50);
+      return _RENT_DATA.sort((d1, d2) => d1.rank - d2.rank).slice(0, 50);
       break;
     case TOP_RENT:
       return _RENT_DATA.sort((d1, d2) => d2.rent - d1.rent).slice(0, 50);

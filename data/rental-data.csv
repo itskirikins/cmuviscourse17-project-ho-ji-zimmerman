@@ -1,4 +1,4 @@
-RegionName,SizeRank,lat,lon,rent
+RegionName,rank,lat,lon,rent
 "New York, NY",1,40.730599,-73.986581,2145
 "Los Angeles, CA",2,34.054394,-118.243941,1915
 "Chicago, IL",3,41.875555,-87.624421,1400
