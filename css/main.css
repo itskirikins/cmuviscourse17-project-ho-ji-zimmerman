@@ -10,6 +10,10 @@ svg {
   float: left;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 #bar-chart--earnings .axis {
   font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }

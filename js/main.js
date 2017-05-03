@@ -1,6 +1,9 @@
 
 // ----- Constants ------------------------------------------------------------
 
+const EARNINGS_SELECTION_DESCRIPTION_ID = '#earnings-selection-description';
+const EARNINGS_SELECTION_SALARY_ID = '#earnings-selection-salary';
+
 // Bar chart
 const CATEGORIES_NAV_ID = '#bar-chart--categories-nav-btn';
 const EARNINGS_ID = '#bar-chart--earnings';
@@ -144,6 +147,21 @@ function percentOfSalary(rent, salary) {
 }
 
 // ----- Rendering functions --------------------------------------------------
+
+function renderEarningsSelectionDescription(curSalary) {
+  console.log(asCurrency(curSalary));
+  document.querySelector(EARNINGS_SELECTION_SALARY_ID).textContent =
+    asCurrency(curSalary);
+
+  var descriptions = {
+    [AGGREGATE]: () => 'all',
+    [CATEGORY]: () => g_earningsSelection.val,
+    [MAJOR]: () => g_earningsSelection.val.major,
+  };
+
+  document.querySelector(EARNINGS_SELECTION_DESCRIPTION_ID).textContent =
+    descriptions[g_earningsSelection.cls]();
+}
 
 function renderCategoriesNavBtn() {
   if (g_earningsSelection.cls === AGGREGATE) {
@@ -406,6 +424,7 @@ function render() {
   const rentalData = getRentalData();
   const curSalary = getCurrentSalary(barsData);
 
+  renderEarningsSelectionDescription(curSalary);
   renderCities(rentalData, curSalary);
 }
 
