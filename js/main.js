@@ -16,8 +16,8 @@ const RENT_CSV = 'data/rental-data.csv';
 const STATES_JSON = 'https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json';
 const RENT_SVG = d3.select(RENT_ID);
 const PROJECTION = d3.geoAlbersUsa().translate([500,250]).scale([1000]);
-const AFFORDABLE_COLOR = "blue";
-const CUTOFF_COLOR = "yellow";
+const AFFORDABLE_COLOR = "white";
+const CUTOFF_COLOR = "#1b6193";
 const UNAFFORDABLE_COLOR = "#931d1b";
 
 // Ticks
@@ -258,7 +258,7 @@ function renderTooltip() {
 
 function renderCities(rentalData, curSalary) {
   var color = d3.scaleLinear()
-      .domain([0, g_percentCutoff])
+      .domain([20, g_percentCutoff])
       .range([AFFORDABLE_COLOR, CUTOFF_COLOR]);
 
   var circles = RENT_SVG.select('.cities').selectAll('circle')
@@ -281,6 +281,10 @@ function renderCities(rentalData, curSalary) {
       .style('fill', (d) => {
         var percent = percentOfSalary(d.rent, curSalary);
         return percent > g_percentCutoff ? UNAFFORDABLE_COLOR : color(percent);
+      })
+      .style('opacity', (d) => {
+        var percent = percentOfSalary(d.rent, curSalary);
+        return percent > g_percentCutoff ? 0.75 : 0.9;
       })
       .on('mouseover', function(d) {
         g_tooltip.transition()
