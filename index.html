@@ -32,11 +32,33 @@
     <section>
       <h2>Affordability of Rent</h2>
 
-      <select id="map--cities-selection">
-        <option value="top-size">Top 50 cities, by population</option>
-        <option value="top-rent">Top 50 cities, by rent</option>
-        <option value="bot-rent">Bottom 50 cities, by rent</option>
-      </select>
+      <p>
+        Only show the
+        <select id="map--cities-selection">
+          <option value="top-size">top 50 cities, by population</option>
+          <option value="top-rent">top 50 cities, by rent</option>
+          <option value="bot-rent">bottom 50 cities, by rent</option>
+        </select>
+        in the map.
+      </p>
+
+      <p>
+        I want
+        <select id="map--percent-cutoff">
+          <option value="10">10%</option>
+          <option value="20">20%</option>
+          <option value="30">30%</option>
+          <option value="40">40%</option>
+          <option value="50">50%</option>
+          <option value="60">60%</option>
+          <option value="70">70%</option>
+          <option value="80">80%</option>
+          <option value="90">90%</option>
+          <option value="100">100%</option>
+        </select>
+        of my salary to go towards rent.
+      </p>
+
       <figure class="fullwidth">
         <svg id="map--rent" width="100%" height="35vw">
           <g class="states"></g>

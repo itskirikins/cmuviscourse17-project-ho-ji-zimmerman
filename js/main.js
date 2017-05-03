@@ -10,11 +10,15 @@ const EARNINGS_SVG = d3.select(EARNINGS_ID);
 
 // Map
 const CITIES_SELECT_ID = '#map--cities-selection';
+const CUTOFF_SELECT_ID = '#map--percent-cutoff';
 const RENT_ID = '#map--rent';
 const RENT_CSV = 'data/rental-data.csv';
 const STATES_JSON = 'https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json';
 const RENT_SVG = d3.select(RENT_ID);
 const PROJECTION = d3.geoAlbersUsa().translate([500,250]).scale([1000]);
+const AFFORDABLE_COLOR = "blue";
+const CUTOFF_COLOR = "yellow";
+const UNAFFORDABLE_COLOR = "#931d1b";
 
 // Ticks
 const TICK_OFFSET = 9;
@@ -40,11 +44,13 @@ var _US_STATES;
 var g_tooltip = d3.select('#map--tooltip');
 
 var g_earningsSelection = {
-  cls: CATEGORY,
-  val: ENGINEERING,
+  cls: AGGREGATE,
+  val: null,
 };
 
 var g_citiesSelection = TOP_SIZE;
+
+var g_percentCutoff = 30;
 
 // ----- State transition functions -----
 
@@ -68,6 +74,10 @@ function setActiveMajor(newCategory, newMajor) {
 
 function setCitiesSelection(newSelection) {
   g_citiesSelection = newSelection;
+}
+
+function setPercentCutoff(newCutoff) {
+  g_percentCutoff = parseInt(newCutoff);
 }
 
 // ----- Helper functions -----------------------------------------------------
@@ -124,6 +134,10 @@ var groupBy = function(xs, key) {
     return rv;
   }, {});
 };
+
+function percentOfSalary(rent, salary) {
+  return (rent / (salary / 12)) * 100;
+}
 
 // ----- Rendering functions --------------------------------------------------
 
@@ -214,6 +228,10 @@ function renderCitiesSelection() {
   document.querySelector(CITIES_SELECT_ID).value = g_citiesSelection;
 }
 
+function renderPercentCutoffSelection() {
+  document.querySelector(CUTOFF_SELECT_ID).value = '' + g_percentCutoff;
+}
+
 function renderStates() {
   // Set up bounding box
   var rect = RENT_SVG.node().getBoundingClientRect();
@@ -238,7 +256,11 @@ function renderTooltip() {
   g_tooltip.style('opacity', 0);
 }
 
-function renderCities(rentalData, percentOfSalary, percentCutoff) {
+function renderCities(rentalData, curSalary) {
+  var color = d3.scaleLinear()
+      .domain([0, g_percentCutoff])
+      .range([AFFORDABLE_COLOR, CUTOFF_COLOR]);
+
   var circles = RENT_SVG.select('.cities').selectAll('circle')
       .data(rentalData);
 
@@ -256,6 +278,10 @@ function renderCities(rentalData, percentOfSalary, percentCutoff) {
       .attr('class', 'city')
       .attr('cx', (d) => PROJECTION([d.lon, d.lat])[0])
       .attr('cy', (d) => PROJECTION([d.lon, d.lat])[1])
+      .style('fill', (d) => {
+        var percent = percentOfSalary(d.rent, curSalary);
+        return percent > g_percentCutoff ? UNAFFORDABLE_COLOR : color(percent);
+      })
       .on('mouseover', function(d) {
         g_tooltip.transition()
           .duration(200)
@@ -275,10 +301,7 @@ function renderCities(rentalData, percentOfSalary, percentCutoff) {
       .attr('r', (d) => Math.sqrt(d.rent / 6));
 }
 
-function render() {
-
-  var barsData;
-
+function getBarsData() {
   // Compute function of global state + constant data to get renderable data
   switch (g_earningsSelection.cls) {
     case AGGREGATE:
@@ -297,12 +320,12 @@ function render() {
           active: acc.active,
         }), {label: curCategory, value: 0, active: false}));
       }
-      barsData = barsData.sort((d1, d2) => d1.value - d2.value);
+      return barsData.sort((d1, d2) => d1.value - d2.value);
       break;
 
     case CATEGORY:
       var curCategory = g_earningsSelection.val;
-      barsData = _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
+      return _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
         .map((d) => ({label: d.major, value: d.median, active: false}))
         .sort((d1, d2) => d1.value - d2.value);
       break;
@@ -310,7 +333,7 @@ function render() {
     case MAJOR:
       var curCategory = g_earningsSelection.val.category;
       var curMajor    = g_earningsSelection.val.major;
-      barsData = _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
+      return _EARNINGS_DATA.filter((d) => d.major_category === curCategory)
         .map((d) => ({label: d.major, value: d.median, active: d.major === curMajor}))
         .sort((d1, d2) => d1.value - d2.value);
       break;
@@ -319,40 +342,61 @@ function render() {
       console.error('Broken invariant: invalid cls for g_earningsSelection');
       return;
   }
+}
 
-  renderCategoriesNavBtn();
-  renderEarningsBars(barsData);
-
-  renderCitiesSelection();
-  renderStates();
-  renderTooltip();
-
-  var rentalData;
+function getRentalData() {
   switch (g_citiesSelection) {
     case TOP_SIZE:
-      rentalData = _RENT_DATA.slice(0, 50);
+      return _RENT_DATA.slice(0, 50);
       break;
     case TOP_RENT:
-      rentalData = _RENT_DATA.sort((d1, d2) => d2.rent - d1.rent).slice(0, 50);
+      return _RENT_DATA.sort((d1, d2) => d2.rent - d1.rent).slice(0, 50);
       break;
     case BOT_RENT:
-      rentalData = _RENT_DATA.sort((d1, d2) => d1.rent - d2.rent).slice(0, 50);
+      return _RENT_DATA.sort((d1, d2) => d1.rent - d2.rent).slice(0, 50);
       break;
     default:
       console.error('Broken invariant: invalid cities selection');
       break;
   }
+}
 
-  // TODO(jez) Compute these based on g_earningsSelection
-  var percentOfSalary = 0;
-  var percentCutoff = 100;
+function getCurrentSalary(barsData) {
+  var salary;
+  salary = barsData.reduce((salary, bar) => {
+    return salary || (bar.active ? bar.value : null)
+  }, null);
 
-  renderCities(rentalData, percentOfSalary, percentCutoff);
+  if (salary) return salary;
+
+  salary = barsData.reduce((salary, bar) => {
+    return salary + (bar.value / barsData.length);
+  }, 0);
+
+  return salary;
+}
+
+function render() {
+
+  const barsData = getBarsData();
+
+  renderCategoriesNavBtn();
+  renderEarningsBars(barsData);
+
+  renderCitiesSelection();
+  renderPercentCutoffSelection();
+  renderStates();
+  renderTooltip();
+
+  const rentalData = getRentalData();
+  const curSalary = getCurrentSalary(barsData);
+
+  renderCities(rentalData, curSalary);
 }
 
 document.querySelector(CATEGORIES_NAV_ID).addEventListener('click', (ev) => {
   ev.preventDefault();
-  setActiveAggregate()
+  setActiveAggregate();
   render();
 });
 
@@ -360,6 +404,11 @@ document.querySelector(CITIES_SELECT_ID).addEventListener('change', (ev) => {
   setCitiesSelection(ev.target.value);
   render();
 });
+
+document.querySelector(CUTOFF_SELECT_ID).addEventListener('change', (ev) => {
+  setPercentCutoff(ev.target.value);
+  render();
+})
 
 d3.csv(EARNINGS_CSV, function(error, allData) {
   if (error) throw error;

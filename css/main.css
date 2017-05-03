@@ -37,8 +37,8 @@
 }
 
 .city {
-  fill: #1b6193;
-  opacity: 0.75;
+  /* fill: #1b6193; */
+  opacity: 0.9;
   stroke: none;
 }
 
