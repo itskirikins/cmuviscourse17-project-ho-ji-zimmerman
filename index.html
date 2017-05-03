@@ -18,8 +18,8 @@
     <section>
       <h2>Earnings By Major</h2>
 
+      <span id="bar-chart--categories-nav-btn">&#9664; Back to all categories</span>
       <figure class="fullwidth">
-        <span id="bar-chart--categories-nav-btn">&#9664; Back to all categories</span>
         <svg id="bar-chart--earnings" width="100%" height="35vw">
           <g id="bar-chart--container">
             <g class="x axis"></g>
@@ -29,7 +29,26 @@
       </figure>
     </section>
 
+    <section>
+      <h2>Affordability of Rent</h2>
+
+      <select id="map--cities-selection">
+        <option value="top-size">Top 50 cities, by population</option>
+        <option value="top-rent">Top 50 cities, by rent</option>
+        <option value="bot-rent">Bottom 50 cities, by rent</option>
+      </select>
+      <figure class="fullwidth">
+        <svg id="map--rent" width="100%" height="35vw">
+          <g class="states"></g>
+          <g class="cities"></g>
+        </svg>
+      </figure>
+    </section>
+
   </article>
+
+  <div id="map--tooltip"></div>
+
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <script src="js/main.js"></script>

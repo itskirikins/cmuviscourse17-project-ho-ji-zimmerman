@@ -26,10 +26,13 @@ const CONTAINER_ID = '#bar-chart--container';
 const EARNINGS_CSV = 'data/recent-grads.csv';
 const EARNINGS_SVG = d3.select(EARNINGS_ID);
 
-// Rentals
+// Map
+const CITIES_SELECT_ID = '#map--cities-selection';
 const RENT_ID = '#map--rent';
 const RENT_CSV = 'data/rental-data.csv';
+const STATES_JSON = 'https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json';
 const RENT_SVG = d3.select(RENT_ID);
+const PROJECTION = d3.geoAlbersUsa().translate([500,250]).scale([1000]);
 
 // Ticks
 const TICK_OFFSET = 9;
@@ -41,17 +44,18 @@ const CATEGORY  = 'CATEGORY';
 const MAJOR     = 'MAJOR';
 
 // Cities selection classes
-const TOP_SIZE = 'TOP_SIZE';
-const TOP_RENT = 'TOP_RENT'
-const BOT_RENT = 'BOT_RENT'
+const TOP_SIZE = 'top-size';
+const TOP_RENT = 'top-rent'
+const BOT_RENT = 'bot-rent'
 
 // Going to be initialized later, but should be constant
 var _EARNINGS_DATA;
 var _RENT_DATA;
+var _US_STATES;
 
 // ----- Mutable state ------------------------------------------------------
 
-var g_tooltip;
+var g_tooltip = d3.select('#map--tooltip');
 
 var g_earningsSelection = {
   cls: CATEGORY,
@@ -78,6 +82,10 @@ function setActiveMajor(newCategory, newMajor) {
     category: newCategory,
     major: newMajor,
   };
+}
+
+function setCitiesSelection(newSelection) {
+  g_citiesSelection = newSelection;
 }
 
 // ----- Helper functions -----------------------------------------------------
@@ -220,103 +228,69 @@ function renderEarningsBars(barsData) {
       });
 }
 
-
-function drawMap(earnings_data) {
-  // ----- SVG Setup -----
-  var rect = RENT_SVG.node().getBoundingClientRect();
-
-  var projection = d3.geoAlbersUsa()
-      .translate([500,250])
-          .scale([1000]);
-
-  var path = d3.geoPath().projection(projection);
-  var g = RENT_SVG.append('g');
-  RENT_SVG.attr('viewBox', '0 0 ' + rect.width + ' ' + (rect.height*1.05));
-
-  // ----- Map Drawing -----
-  d3.json('https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json', function(error, us) {
-   if (error) throw error;
-
-   g.attr('class', 'states')
-    .selectAll('path')
-               .data(us.features)
-               .enter()
-               .append('path')
-               .attr('d', path);
-  });
-
-  // TODO(liza8bit) Allow for selection of major category
-  var curCategory = SCIENCE;
-  var data = earnings_data.filter((d) => d.major_category === curCategory)
-    .map((d) => { return {major: d.major, median: d.median}; })
-    .sort((d1, d2) => d1.median - d2.median)
-  var majorOptions = document.getElementById('map--select-major').options;
-  data.forEach( (d) => majorOptions.add(new Option(d.major, d.major)));
-  var cities = RENT_SVG.append('g').attr('class', 'cities');
-  g_tooltip = d3.select('body')
-    .append('div')
-    .attr('class', 'tooltip')
-    .style('opacity', 0);
+function renderCitiesSelection() {
+  document.querySelector(CITIES_SELECT_ID).value = g_citiesSelection;
 }
 
-function rentalPrices(rental_data, earnings_data) {
-  var data = rental_data;
-  var projection = d3.geoAlbersUsa()
-    .translate([500,250])
-    .scale([1000]);
-  var sel = document.getElementById('map--select-top');
-  var sel_data = function() {
-    switch(sel.options[sel.selectedIndex].value) {
-        case '0':
-          return data.slice(0,50);
-          break;
-        case '1':
-          return data.sort((d1, d2) => d2.rent - d1.rent).slice(0,50);
-          break;
-        case '2':
-          return data.sort((d1, d2) => d1.rent - d2.rent).slice(0,50);
-          break;
-    }};
+function renderStates() {
+  // Set up bounding box
+  var rect = RENT_SVG.node().getBoundingClientRect();
+  RENT_SVG.attr('viewBox', '0 0 ' + rect.width + ' ' + (rect.height*1.05));
 
-  var circles = RENT_SVG.select('g.cities').selectAll('circle')
-    .data(sel_data, function(d) {return d.RegionName});
+  // Set up projection
+  var path = d3.geoPath().projection(PROJECTION);
+
+  // Draw map using projection
+  var states = RENT_SVG
+    .select('.states')
+    .selectAll('path')
+      .data(_US_STATES.features);
+
+  states.exit().remove();
+  states = states.enter().append('path').merge(states);
+
+  states.attr('d', path);
+}
+
+function renderTooltip() {
+  g_tooltip.style('opacity', 0);
+}
+
+function renderCities(rentalData, percentOfSalary, percentCutoff) {
+  var circles = RENT_SVG.select('.cities').selectAll('circle')
+      .data(rentalData);
 
   circles.exit()
-    .transition()
-    .duration(500)
-    .style('opacity', 0)
-    .remove();
+      .transition()
+      .duration(500)
+      .style('opacity', 0)
+      .remove();
 
-  circles.enter()
-    .append('circle')
-    .attr('class', 'city')
-    .attr('cx', function(d) {
-      return projection([d.lon, d.lat])[0];
-    })
-    .attr('cy', function(d) {
-      return projection([d.lon, d.lat])[1];
-    })
-    .on('mouseover', function(d) {
-      g_tooltip.transition()
-        .duration(200)
-        .style('opacity', .9);
-
-      g_tooltip.text(d.RegionName+'\n Median Rent: '+asCurrency(d.rent))
-        .style('left', (d3.event.pageX) + 'px')
-        .style('top', (d3.event.pageY - 28) + 'px');
-      this.parentNode.appendChild(this);
-    })
-    .on('mouseout', function(d) {
-      g_tooltip.transition()
-        .duration(500)
-        .style('opacity', 0);
-    })
-    .transition()
-    .duration(500)
-    .attr('r', function(d) {
-      return Math.sqrt(d.rent/6);
-      })
+  circles = circles.enter()
+      .append('circle')
     .merge(circles);
+
+  circles
+      .attr('class', 'city')
+      .attr('cx', (d) => PROJECTION([d.lon, d.lat])[0])
+      .attr('cy', (d) => PROJECTION([d.lon, d.lat])[1])
+      .on('mouseover', function(d) {
+        g_tooltip.transition()
+          .duration(200)
+          .style('opacity', .9);
+
+        g_tooltip.text(`${d.RegionName}\n Median Rent: ${asCurrency(d.rent)}`)
+          .style('left', (d3.event.pageX + 20) + 'px')
+          .style('top', (d3.event.pageY - 28) + 'px');
+      })
+      .on('mouseout', function(d) {
+        g_tooltip.transition()
+          .duration(500)
+          .style('opacity', 0);
+      })
+    .transition()
+      .duration(500)
+      .attr('r', (d) => Math.sqrt(d.rent / 6));
 }
 
 function render() {
@@ -367,9 +341,31 @@ function render() {
   renderCategoriesNavBtn();
   renderEarningsBars(barsData);
 
-  // TODO(jez) Update map to use new global state etc.
-  //drawMap();
-  //rentalPrices();
+  renderCitiesSelection();
+  renderStates();
+  renderTooltip();
+
+  var rentalData;
+  switch (g_citiesSelection) {
+    case TOP_SIZE:
+      rentalData = _RENT_DATA.slice(0, 50);
+      break;
+    case TOP_RENT:
+      rentalData = _RENT_DATA.sort((d1, d2) => d2.rent - d1.rent).slice(0, 50);
+      break;
+    case BOT_RENT:
+      rentalData = _RENT_DATA.sort((d1, d2) => d1.rent - d2.rent).slice(0, 50);
+      break;
+    default:
+      console.error('Broken invariant: invalid cities selection');
+      break;
+  }
+
+  // TODO(jez) Compute these based on g_earningsSelection
+  var percentOfSalary = 0;
+  var percentCutoff = 100;
+
+  renderCities(rentalData, percentOfSalary, percentCutoff);
 }
 
 document.querySelector(CATEGORIES_NAV_ID).addEventListener('click', (ev) => {
@@ -378,16 +374,26 @@ document.querySelector(CATEGORIES_NAV_ID).addEventListener('click', (ev) => {
   render();
 });
 
+document.querySelector(CITIES_SELECT_ID).addEventListener('change', (ev) => {
+  setCitiesSelection(ev.target.value);
+  render();
+});
+
 d3.csv(EARNINGS_CSV, function(error, allData) {
   if (error) throw error;
   allData.forEach((d) => { d.major = titleCase(d.major) });
   _EARNINGS_DATA = allData;
 
-  d3.csv(RENT_CSV, function(error, rent_data) {
+  d3.csv(RENT_CSV, function(error, rentData) {
     if (error) throw error;
-    _RENT_DATA = rent_data;
+    _RENT_DATA = rentData;
 
-    render();
+    d3.json(STATES_JSON, function(error, usStatesData) {
+      if (error) throw error;
+      _US_STATES = usStatesData;
+
+      render();
+    });
   });
 });
 

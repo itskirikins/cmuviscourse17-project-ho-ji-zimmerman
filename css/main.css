@@ -20,14 +20,15 @@
   cursor: default;
 }
 #bar-chart--categories-nav-btn.enabled {
+  color: #111;
   cursor: pointer;
 }
 #bar-chart--categories-nav-btn.enabled:hover {
   text-decoration: underline;
 }
 
-.states{
-  fill: #93a1a1;
+.states {
+  fill: #073642;
   stroke: #fff;
   stroke-width: 1px;
   stroke-linejoin: round;
@@ -35,20 +36,21 @@
   pointer-events: none;
 }
 
-.city{
-  fill: #268bd2;
+.city {
+  fill: #1b6193;
   opacity: 0.75;
   stroke: none;
 }
 
-.city:hover{
-  fill: #1b6193;
+.city:hover {
+  fill: #268bd2;
+  cursor: pointer;
   opacity: 1;
   stroke: #fff;
   stroke-width: .5px;
 }
 
-div.tooltip {
+#map--tooltip {
   position: absolute;
   text-align: center;
   width: 150px;
