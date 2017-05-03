@@ -32,6 +32,7 @@ svg {
 }
 
 #bar-chart--categories-nav-btn {
+  font-size: 1.2rem;
   color: #93a1a1;
   cursor: default;
 }
