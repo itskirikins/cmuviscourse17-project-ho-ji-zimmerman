@@ -1,24 +1,6 @@
 
 // ----- Constants ------------------------------------------------------------
 
-// Categories
-const ENGINEERING = 'Engineering';
-const EDUCATION = 'Education';
-const HUMANITIES = 'Humanities & Liberal Arts';
-const BIOLOGY = 'Biology & Life Science';
-const BUSINESS = 'Business';
-const HEALTH = 'Health';
-const COMPUTERS = 'Computers & Mathematics';
-const AGRICULTURE = 'Agriculture & Natural Resources';
-const SCIENCE = 'Physical Sciences';
-const PSYCHOLOGY = 'Psychology & Social Work';
-const SOCIAL_SCIENCE = 'Social Science';
-const ARTS = 'Arts';
-const INDUSTRIAL_ARTS = 'Industrial Arts & Consumer Services';
-const LAW = 'Law & Public Policy';
-const COMMUNICATIONS = 'Communications & Journalism';
-const INTERDISCIPLINARY = 'Interdisciplinary';
-
 // Bar chart
 const CATEGORIES_NAV_ID = '#bar-chart--categories-nav-btn';
 const EARNINGS_ID = '#bar-chart--earnings';
