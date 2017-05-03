@@ -16,22 +16,6 @@
     <p>Audasia Ho (audasiah), Elizabeth Ji (emji), Jake Zimmerman (jezimmer)</p>
 
     <section>
-      <h2>Earnings By Major</h2>
-
-      <span id="bar-chart--categories-nav-btn">&#9664; Back to all categories</span>
-      <figure class="fullwidth">
-        <svg id="bar-chart--earnings" width="100%" height="35vw">
-          <g id="bar-chart--container">
-            <g class="x axis"></g>
-            <g class="y axis"></g>
-          </g>
-        </svg>
-      </figure>
-    </section>
-
-    <section>
-      <h2>Affordability of Rent</h2>
-
       <p>
         Only show the
         <select id="map--cities-selection">
@@ -59,15 +43,27 @@
         of my salary to go towards rent.
       </p>
 
-      <figure class="fullwidth">
-        <svg id="map--rent" width="100%" height="35vw">
+      <p>
+        <span id="bar-chart--categories-nav-btn">&#9664; Back to all categories</span>
+      </p>
+
+      <div class="svg-fullwidth">
+        <svg id="bar-chart--earnings" width="50%" height="35vw">
+          <g id="bar-chart--container">
+            <g class="x axis"></g>
+            <g class="y axis"></g>
+          </g>
+        </svg>
+
+        <svg id="map--rent" width="50%" height="35vw">
           <g class="states"></g>
           <g class="cities"></g>
         </svg>
-      </figure>
-    </section>
+      </div>
 
+    </section>
   </article>
+
 
   <div id="map--tooltip"></div>
 

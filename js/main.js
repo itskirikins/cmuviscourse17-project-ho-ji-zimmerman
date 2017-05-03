@@ -15,7 +15,7 @@ const RENT_ID = '#map--rent';
 const RENT_CSV = 'data/rental-data.csv';
 const STATES_JSON = 'https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_12/us-states.json';
 const RENT_SVG = d3.select(RENT_ID);
-const PROJECTION = d3.geoAlbersUsa().translate([500,250]).scale([1000]);
+const PROJECTION = d3.geoAlbersUsa().translate([300,225]).scale([850]);
 const AFFORDABLE_COLOR = "white";
 const CUTOFF_COLOR = "#1b6193";
 const UNAFFORDABLE_COLOR = "#931d1b";
@@ -166,12 +166,14 @@ function renderEarningsBars(barsData) {
   var g = EARNINGS_SVG.select(CONTAINER_ID)
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-  var x = d3.scaleLinear().range([0, width])
-  var y = d3.scaleBand().range([height, 0])
+  var x = d3.scaleLinear()
+    .domain([0, 110000])
+    .range([0, width]);
 
-  x.domain([0, d3.max(barsData, (d) => d.value)]);
-  y.domain(barsData.map((d) => d.label))
-    .padding(0.1);
+  var y = d3.scaleBand()
+    .domain(barsData.map((d) => d.label))
+    .padding(0.1)
+    .range([height, 0]);
 
   var ticksFn = d3.axisBottom(x)
     .ticks(5)
@@ -311,7 +313,7 @@ function renderCities(rentalData, curSalary) {
       })
     .transition()
       .duration(500)
-      .attr('r', (d) => Math.sqrt(d.rent / 6));
+      .attr('r', (d) => Math.sqrt(d.rent / 10));
 }
 
 function getBarsData() {
