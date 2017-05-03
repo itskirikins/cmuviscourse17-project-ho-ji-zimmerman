@@ -86,6 +86,10 @@ function asCurrency(amt) {
   return '$' + Intl.NumberFormat().format(amt);
 }
 
+function twoDecimals(percent) {
+  return Math.round(percent * 100) / 100;
+}
+
 function truncate(text, width) {
   text.each(function() {
     var self = d3.select(this);
@@ -291,7 +295,12 @@ function renderCities(rentalData, curSalary) {
           .duration(200)
           .style('opacity', .9);
 
-        g_tooltip.text(`${d.RegionName}\n Median Rent: ${asCurrency(d.rent)}`)
+        var percent = percentOfSalary(d.rent, curSalary);
+        var tooltipText = '';
+        tooltipText += `${d.RegionName}\n`;
+        tooltipText += `Median rent: ${asCurrency(d.rent)}\n`;
+        tooltipText += `Percent of salary: ${twoDecimals(percent)}%`;
+        g_tooltip.text(tooltipText)
           .style('left', (d3.event.pageX + 20) + 'px')
           .style('top', (d3.event.pageY - 28) + 'px');
       })
