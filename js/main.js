@@ -149,7 +149,6 @@ function percentOfSalary(rent, salary) {
 // ----- Rendering functions --------------------------------------------------
 
 function renderEarningsSelectionDescription(curSalary) {
-  console.log(asCurrency(curSalary));
   document.querySelector(EARNINGS_SELECTION_SALARY_ID).textContent =
     asCurrency(curSalary);
 
@@ -217,7 +216,6 @@ function renderEarningsBars(barsData) {
       .attr('x', 0)
       .attr('height', y.bandwidth())
       .attr('y', (d) => y(d.label))
-      .attr('width', (d) => x(d.value))
       .classed('active', (d) => d.active)
       .on('click', (d) => {
         switch (g_earningsSelection.cls) {
@@ -244,7 +242,10 @@ function renderEarningsBars(barsData) {
         }
 
         render();
-      });
+      })
+    .transition()
+      .duration(500)
+      .attr('width', (d) => x(d.value))
 }
 
 function renderCitiesSelection() {
@@ -302,10 +303,6 @@ function renderCities(rentalData, curSalary) {
       .attr('class', 'city')
       .attr('cx', (d) => PROJECTION([d.lon, d.lat])[0])
       .attr('cy', (d) => PROJECTION([d.lon, d.lat])[1])
-      .style('fill', (d) => {
-        var percent = percentOfSalary(d.rent, curSalary);
-        return percent > g_percentCutoff ? UNAFFORDABLE_COLOR : color(percent);
-      })
       .style('opacity', (d) => {
         var percent = percentOfSalary(d.rent, curSalary);
         return percent > g_percentCutoff ? 0.65 : 0.9;
@@ -333,7 +330,11 @@ function renderCities(rentalData, curSalary) {
       })
     .transition()
       .duration(500)
-      .attr('r', (d) => Math.sqrt(d.rent / 10));
+      .attr('r', (d) => Math.sqrt(d.rent / 10))
+      .style('fill', (d) => {
+        var percent = percentOfSalary(d.rent, curSalary);
+        return percent > g_percentCutoff ? UNAFFORDABLE_COLOR : color(percent);
+      })
 }
 
 function getBarsData() {
