@@ -31,6 +31,19 @@ select {
   text-align: right;
 }
 
+input {
+  -webkit-appearance: none;
+  border: none;
+  background: #eee8d5;
+  padding: 5px;
+  font-size: 1.4rem;
+  font-family: et-book;
+  font-weight: bold;
+  width: 140px;
+  border-radius: 7px;
+  text-align: center;
+}
+
 #bar-chart--earnings .axis {
   font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }

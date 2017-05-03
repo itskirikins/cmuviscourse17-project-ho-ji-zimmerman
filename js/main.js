@@ -23,6 +23,8 @@ const AFFORDABLE_COLOR = "white";
 const CUTOFF_COLOR = "#1b6193";
 const UNAFFORDABLE_COLOR = "#931d1b";
 
+const ENTER_KEYCODE = 13;
+
 // Ticks
 const TICK_OFFSET = 9;
 const TICK_FONT_SIZE = 14;
@@ -34,8 +36,12 @@ const MAJOR     = 'MAJOR';
 
 // Cities selection classes
 const TOP_SIZE = 'top-size';
-const TOP_RENT = 'top-rent'
-const BOT_RENT = 'bot-rent'
+const TOP_RENT = 'top-rent';
+const BOT_RENT = 'bot-rent';
+
+// Map source classes
+const USE_BARS = 'use-bars';
+const USE_INPUT = 'use-input';
 
 // Going to be initialized later, but should be constant
 var _EARNINGS_DATA;
@@ -53,18 +59,37 @@ var g_earningsSelection = {
 
 var g_citiesSelection = TOP_SIZE;
 
+var g_mapSource = {
+  cls: USE_BARS,
+  val: null,
+};
+
 var g_percentCutoff = 30;
 
 // ----- State transition functions -----
 
+function setMapSourceUseBars() {
+  g_mapSource.cls = USE_BARS;
+  g_mapSource.val = null;
+}
+
+function setMapSourceUseInput(newSalary) {
+  g_mapSource.cls = USE_INPUT;
+  g_mapSource.val = newSalary;
+}
+
 function setActiveAggregate() {
   g_earningsSelection.cls = AGGREGATE;
   g_earningsSelection.val = null;
+
+  setMapSourceUseBars();
 }
 
 function setActiveCategory(newCategory) {
   g_earningsSelection.cls = CATEGORY;
   g_earningsSelection.val = newCategory;
+
+  setMapSourceUseBars();
 }
 
 function setActiveMajor(newCategory, newMajor) {
@@ -73,6 +98,8 @@ function setActiveMajor(newCategory, newMajor) {
     category: newCategory,
     major: newMajor,
   };
+
+  setMapSourceUseBars();
 }
 
 function setCitiesSelection(newSelection) {
@@ -91,6 +118,15 @@ function asCurrency(amt) {
 
 function twoDecimals(percent) {
   return Math.round(percent * 100) / 100;
+}
+
+function parseCurrency(amtString) {
+  // Strip currency punctuation before parsing
+  return parseFloat(amtString.replace(/[$,]+/g, ''));
+}
+
+function validSalary(newSalary) {
+  return newSalary > 0 && !isNaN(newSalary) && isFinite(newSalary);
 }
 
 function truncate(text, width) {
@@ -148,18 +184,12 @@ function percentOfSalary(rent, salary) {
 
 // ----- Rendering functions --------------------------------------------------
 
-function renderEarningsSelectionDescription(curSalary) {
-  document.querySelector(EARNINGS_SELECTION_SALARY_ID).textContent =
+function renderEarningsSelectionDescription(curSalary, curDescription) {
+  document.querySelector(EARNINGS_SELECTION_SALARY_ID).value =
     asCurrency(curSalary);
 
-  var descriptions = {
-    [AGGREGATE]: () => 'all',
-    [CATEGORY]: () => g_earningsSelection.val,
-    [MAJOR]: () => g_earningsSelection.val.major,
-  };
-
   document.querySelector(EARNINGS_SELECTION_DESCRIPTION_ID).textContent =
-    descriptions[g_earningsSelection.cls]();
+    curDescription;
 }
 
 function renderCategoriesNavBtn() {
@@ -398,18 +428,48 @@ function getRentalData() {
 }
 
 function getCurrentSalary(barsData) {
-  var salary;
-  salary = barsData.reduce((salary, bar) => {
-    return salary || (bar.active ? bar.value : null)
-  }, null);
+  switch (g_mapSource.cls) {
+    case USE_INPUT:
+      return g_mapSource.val;
 
-  if (salary) return salary;
+    case USE_BARS:
+      var salary;
+      salary = barsData.reduce((salary, bar) => {
+        return salary || (bar.active ? bar.value : null)
+      }, null);
 
-  salary = barsData.reduce((salary, bar) => {
-    return salary + (bar.value / barsData.length);
-  }, 0);
+      if (salary) return salary;
 
-  return salary;
+      salary = barsData.reduce((salary, bar) => {
+        return salary + (bar.value / barsData.length);
+      }, 0);
+
+      return salary;
+
+    default:
+      console.error('Broken invariant: invalid map source');
+      return;
+  }
+}
+
+function getCurrentDescription() {
+  switch (g_mapSource.cls) {
+    case USE_INPUT:
+      return 'you';
+
+    case USE_BARS:
+      var descriptions = {
+        [AGGREGATE]: () => 'all graduates',
+        [CATEGORY]: () => `all ${g_earningsSelection.val} graduates`,
+        [MAJOR]: () => `all ${g_earningsSelection.val.major} graduates`,
+      };
+
+      return descriptions[g_earningsSelection.cls]();
+
+    default:
+      console.error('Broken invariant: invalid map source');
+      return;
+  }
 }
 
 function render() {
@@ -426,8 +486,9 @@ function render() {
 
   const rentalData = getRentalData();
   const curSalary = getCurrentSalary(barsData);
+  const curDescription = getCurrentDescription();
 
-  renderEarningsSelectionDescription(curSalary);
+  renderEarningsSelectionDescription(curSalary, curDescription);
   renderCities(rentalData, curSalary);
 }
 
@@ -446,6 +507,23 @@ document.querySelector(CUTOFF_SELECT_ID).addEventListener('change', (ev) => {
   setPercentCutoff(ev.target.value);
   render();
 })
+
+function handleSalaryEvent(salaryString) {
+  var newSalary = parseCurrency(salaryString);
+  if (validSalary(newSalary)) {
+    setMapSourceUseInput(newSalary);
+  }
+  render();
+}
+
+document.querySelector(EARNINGS_SELECTION_SALARY_ID).addEventListener('keypress', (ev) => {
+  if (ev.keyCode == ENTER_KEYCODE) {
+    handleSalaryEvent(ev.target.value);
+  }
+});
+document.querySelector(EARNINGS_SELECTION_SALARY_ID).addEventListener('blur', (ev) => {
+  handleSalaryEvent(ev.target.value);
+});
 
 d3.csv(EARNINGS_CSV, function(error, allData) {
   if (error) throw error;
