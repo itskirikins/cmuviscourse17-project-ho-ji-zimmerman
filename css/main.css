@@ -79,3 +79,11 @@ svg {
   pointer-events: none;
   white-space: pre;
 }
+
+#scale {
+  float: right;
+  margin-right: 15%;
+  margin-top: -60px;
+  width: 500px;
+  padding-bottom: 20px;
+}
