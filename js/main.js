@@ -308,7 +308,7 @@ function renderCities(rentalData, curSalary) {
       })
       .style('opacity', (d) => {
         var percent = percentOfSalary(d.rent, curSalary);
-        return percent > g_percentCutoff ? 0.75 : 0.9;
+        return percent > g_percentCutoff ? 0.65 : 0.9;
       })
       .on('mouseover', function(d) {
         g_tooltip.transition()
