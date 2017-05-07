@@ -8,9 +8,9 @@ Spring 2017.
 
 - :earth_americas: [Live Demo](https://itskirikins.github.io/post-grads/)
 
-- :clipboard: [Initial proposal](proposal/proposal.md)
+- :clipboard: [Initial proposal](written/proposal.md)
 
-- :bar_chart: [Process book & final report](proposal/ProcessBook.pdf)
+- :bar_chart: [Process book & final report](written/ProcessBook.pdf)
 
 - :tv: [Video](https://itskirikins.github.io/post-grads/img/screencast-01.mp4):
 
